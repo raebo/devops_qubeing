@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# sidekiq
+#
+# chkconfig:
+# description:  Start and stop sidekiq
+
+APP_HOME="/srv/spms/current"
+
+case "$1" in
+  start)
+    if [ -f $APP_HOME/config/sidekiq.yml ];
+    then
+      echo $"Starting Sidekiq"
+      cd $APP_HOME && bundle exec sidekiq -C config/sidekiq.yml
+    else
+      echo $"Cannot find a config file for sidekiq"
+    fi
+    ;;
+  stop)
+    echo $"Stopping Sidekiq"
+    cd $APP_HOME && bundle exec sidekiqctl stop /srv/spms/current/tmp/pids/sidekiq.pid
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac

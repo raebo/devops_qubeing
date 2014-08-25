@@ -1,0 +1,19 @@
+# !!! managed by puppet !!!
+
+# !!! managed by puppet !!!
+
+app.process "cron" do |process|
+  process.pid_file = "/var/run/crond.pid"
+  process.uid = process.gid = 'root'
+
+  process.start_command = "/etc/init.d/cron start"
+  process.stop_command = "/etc/init.d/cron stop"
+
+  process.start_grace_time = 10.seconds
+  process.stop_grace_time = 10.seconds
+  process.restart_grace_time = 10.seconds
+
+  process.checks :email_notifier
+end
+
+

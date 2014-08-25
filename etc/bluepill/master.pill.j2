@@ -1,0 +1,57 @@
+# encoding: utf-8
+# !!! managed by ansible !!!
+#
+require 'rubygems'
+require 'mail'
+
+Mail.defaults do
+  delivery_method :smtp, {
+    :address =>               "smtp.sendgrid.net",
+    :user_name =>             "docount_spms",
+    :password =>              "FeBnraiCb99kKtZPmqGY",
+    :domain =>                "docount.com",
+    :address =>               "smtp.sendgrid.net",
+    :port =>                  587,
+    :authentication =>        :plain,
+    :enable_starttls_auto =>  true
+  }
+end
+
+class EmailNotifier < Bluepill::Trigger
+  def initialize(process, options = {})
+    @email = options.delete(:email) || "agroves@docount.com"
+    super
+  end
+
+  def notify(transition)
+    return if transition.from_name == transition.to_name
+
+    subject ||= "{{ hostname }}: #{process.name} changed from #{transition.from_name} to #{transition.to_name}"
+    title ||= "#{process.name} changed from #{transition.from_name} to #{transition.to_name}"
+    description ||= "#{process.name} changed from #{transition.from_name} to #{transition.to_name}"
+
+    Mail.deliver do
+      to ['agroves@docount.com', 'boris.raeschler@siimbyant.de']
+      from 'Bluepill <bluepill@docount.com>'
+      subject subject
+      text_part do
+        body <<-EOF
+          Date: #{Time.now.strftime("%a, %d %b %Y %T %Z")}
+          Host: {{ hostname }}
+          Description: #{description}
+
+          Your faithful employee,
+          bluepill
+        EOF
+      end
+    end
+  end
+end
+
+Bluepill.application("bluepill", :foreground => true, :log_file => "/var/log/bluepill.log") do |app|
+  Dir["/etc/bluepill/services/*"].each do |file|
+    puts "Loading #{file}..."
+    eval File.read(file)
+  end
+end
+

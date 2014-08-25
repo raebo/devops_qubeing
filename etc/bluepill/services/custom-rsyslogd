@@ -1,0 +1,21 @@
+# !!! managed by puppet !!!
+
+# !!! managed by puppet !!!
+
+app.process "rsyslogd" do |process|
+  process.pid_file = "/var/run/rsyslogd.pid"
+  process.uid = process.gid = 'root'
+
+  process.start_command = "/etc/init.d/rsyslog start"
+  process.stop_command = "/etc/init.d/rsyslog stop"
+
+  process.start_grace_time = 10.seconds
+  process.stop_grace_time = 10.seconds
+  process.restart_grace_time = 10.seconds
+
+  process.checks :email_notifier
+  process.checks :mem_usage, :every => 30.seconds, :below => 5.megabytes, :times => [3, 5]
+  process.checks :cpu_usage, :every => 30.seconds, :below => 10, :times => [3, 5]
+end
+
+

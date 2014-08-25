@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# !!! managed by puppet !!!
+
+### BEGIN INIT INFO
+# Provides: bluepill
+# Required-Start: $all
+# Required-Stop: $local_fs $remote_fs $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: bluepill daemon, providing process monitoring
+# Description: bluepill is a monitoring tool. More info at http://github.com/arya/bluepill
+### END INIT INFO
+
+set -e
+
+. /lib/lsb/init-functions
+
+# bash needed because of rvm
+CMD="bash -l -c 'cd /etc/bluepill; bluepill"
+
+case "$1" in
+  start)
+    echo -n "Starting bluepill..."
+    eval "$CMD load master.pill 1>/dev/null 2>/var/log/bluepill.err &'"
+    i=0
+    while [ ! -f /var/run/bluepill/pids/bluepill.pid ]; do
+      echo -n "."
+      sleep 0.5
+      if [ $i -ge 20 ]; then
+        echo "failed"
+        exit 1
+      fi
+      let i=i+1
+    done
+    echo ""
+    ;;
+  stop)
+    echo -n "Stopping bluepill..."
+    eval "$CMD quit >/dev/null'"
+    i=0
+    while [ -f /var/run/bluepill/pids/bluepill.pid ]; do
+      echo -n "."
+      sleep 0.5
+      if [ $i -ge 20 ]; then
+        echo "failed"
+        exit 1
+      fi
+      let i=i+1
+    done
+    echo ""
+    ;;
+  restart)
+    ## Stop the service and regardless of whether it was
+    ## running or not, start it again.
+    $0 stop || true
+    $0 start
+    ;;
+  status)
+    eval "$CMD status'"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+

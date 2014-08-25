@@ -1,0 +1,24 @@
+# !!! managed by ansible !!!
+
+app.process "puma" do |process|
+  root = "/srv/spms/current"
+
+  process.pid_file = File.join(root, 'tmp', 'pids', 'puma.pid')
+  process.working_dir = root
+
+  process.start_command = "bash -l -c 'cd #{root} && bundle exec puma -q -d -e {{ environment }} -b unix:///srv/spms/shared/sockets/puma.sock -S /srv/spms/shared/sockets/puma.state --control unix:///srv/spms/shared/sockets/pumactl.sock --pidfile /srv/spms/shared/pids/puma.pid'"
+  process.stop_command = "kill -QUIT {{PID}}"
+  process.restart_command = "kill -USR2 {{PID}}"
+
+  process.uid = process.gid = 'butler'
+
+  process.start_grace_time = 30.seconds
+  process.stop_grace_time = 30.seconds
+  process.restart_grace_time = 30.seconds
+
+  process.checks :email_notifier
+
+  process.checks :cpu_usage, :every => 30.seconds, :below => 50, :times => [8, 10], :fires => :stop
+
+end
+

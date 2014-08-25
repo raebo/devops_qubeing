@@ -1,0 +1,10 @@
+- name: source files for exim
+  hosts:
+    - staging
+    - demo
+    - myclimate
+  user: root
+  tasks:
+    - action: template src=../etc/exim4/update-exim4.conf.conf.j2 dest=/etc/exim4/update-exim4.conf.conf
+    - action: template src=../etc/exim4/exim4.conf.j2 dest=/etc/exim4/exim4.conf
+    - action: command /etc/init.d/exim4 restart

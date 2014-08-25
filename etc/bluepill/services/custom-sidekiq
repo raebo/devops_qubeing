@@ -1,0 +1,26 @@
+# !!! managed by ansible !!!
+
+app.process "sidekiq" do |process|
+  root = "/srv/spms/current"
+  time_finish_jobs = 60
+
+  process.pid_file = File.join(root, 'tmp', 'pids', 'sidekiq.pid')
+  process.working_dir = root
+
+  process.start_command = "bash -l -c 'cd #{root} && bundle exec sidekiq -C /srv/spms/shared/config/sidekiq.yml -P /srv/spms/shared/pids/sidekiq.pid'"
+  process.stop_command = "bash -l -c 'cd #{root} && bundle exec sidekiqctl stop /srv/spms/shared/pids/sidekiq.pid #{time_finish_jobs}'"
+  process
+
+
+  process.uid = process.gid = 'butler'
+
+  process.start_grace_time = 30.seconds
+  process.stop_grace_time = 30.seconds
+  process.restart_grace_time = 30.seconds
+
+  process.checks :email_notifier
+
+  process.checks :cpu_usage, :every => 30.seconds, :below => 50, :times => [8, 10], :fires => :stop
+
+end
+

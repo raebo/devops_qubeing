@@ -1,0 +1,7 @@
+[demo]
+vs16744.netskin.com hostname=demo ip=185.14.157.16 domainname=demo.docount.com environment=demo
+[myclimate]
+vs16720.netskin.com hostname=myclimate ip=185.14.157.86 domainname=performance.myclimate.org environment=production
+[staging]
+vs16743.netskin.com hostname=staging ip=185.14.157.85 domainname=staging.docount.com environment=staging
+

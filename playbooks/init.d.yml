@@ -1,0 +1,10 @@
+- name: Stuff for init.d
+  hosts:
+    - staging
+    - demo
+    - myclimate
+  user: root
+  tasks:
+    - action: file dest=/etc/init.d mode=755 owner=root group=root state=directory
+    - action: template src=../etc/init.d/sidekiq dest=/etc/init.d/sidekiq mode=551 owner=root group=root
+    - action: template src=../etc/init.d/bluepill dest=/etc/init.d/bluepill mode=551 owner=root group=root

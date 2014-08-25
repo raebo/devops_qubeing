@@ -1,0 +1,16 @@
+- name: source files for bluepill
+  hosts:
+    - myclimate
+    - demo
+    - staging
+  user: root
+  tasks:
+    - action: template src=../etc/bluepill/master.pill.j2            dest=/etc/bluepill/master.pill
+    - action: template src=../etc/bluepill/services/puma.j2          dest=/etc/bluepill/services/puma
+    - action: copy     src=../etc/bluepill/services/custom-cron      dest=/etc/bluepill/services/custom-cron
+    - action: copy     src=../etc/bluepill/services/custom-exim      dest=/etc/bluepill/services/custom-exim
+    - action: copy     src=../etc/bluepill/services/custom-nginx     dest=/etc/bluepill/services/custom-nginx
+    - action: copy     src=../etc/bluepill/services/custom-rsyslogd  dest=/etc/bluepill/services/custom-rsyslogd
+    - action: copy     src=../etc/bluepill/services/custom-sshd      dest=/etc/bluepill/services/custom-sshd
+    - action: copy     src=../etc/bluepill/services/custom-sidekiq   dest=/etc/bluepill/services/custom-sidekiq
+    - action: command /etc/init.d/bluepill restart

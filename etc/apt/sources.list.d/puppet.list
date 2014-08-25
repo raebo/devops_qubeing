@@ -1,0 +1,2 @@
+deb http://apt.puppetlabs.com/ squeeze main
+deb-src http://apt.puppetlabs.com/ squeeze main

@@ -1,0 +1,14 @@
+deb http://cdn.debian.net/debian squeeze main contrib non-free
+deb-src http://cdn.debian.net/debian squeeze main contrib non-free
+
+deb http://security.debian.org squeeze/updates main contrib non-free
+deb-src http://security.debian.org squeeze/updates main contrib non-free
+
+deb http://backports.debian.org/debian-backports squeeze-backports main
+
+# (needed for sidekiq)
+deb http://ftp.hosteurope.de/mirror/packages.dotdeb.org/ stable all
+deb-src http://ftp.hosteurope.de/mirror/packages.dotdeb.org/ stable all
+# (needed for postgres 9.2)
+deb http://ftp.hosteurope.de/mirror/packages.dotdeb.org/ stable all
+deb http://apt.postgresql.org/pub/repos/apt/ squeeze-pgdg main

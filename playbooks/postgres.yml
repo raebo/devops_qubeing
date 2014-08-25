@@ -1,0 +1,8 @@
+- name: source files for postgres
+  hosts:
+    - staging
+    - demo
+  user: root
+  tasks:
+    - action: file dest=/etc/postgresql/9.2/main mode=755 owner=postgres group=postgres state=directory
+    - action: template src=../etc/postgresql/9.2/main/postgresql.conf dest=/etc/postgresql/9.2/main/postgresql.conf mode=644 owner=postgres group=postgres
